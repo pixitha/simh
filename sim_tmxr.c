@@ -1460,6 +1460,12 @@ else                                                    /* Telnet connection */
         lp->conn = FALSE;
         lp->cnms = 0;
         lp->xmte = 1;
+        /* A closed network session removes the remote modem inputs.  Keep
+           locally driven DTR/RTS intact so an attached outgoing line can
+           reconnect, but do not leave the cached DSR/DCD/CTS/RING inputs
+           asserted.  DMV uses the DSR transition to report its documented
+           modem-disconnected response (0304). */
+        lp->modembits &= TMXR_MDM_OUTGOING;
         }
 free(lp->ipad);
 lp->ipad = NULL;
